@@ -1,8 +1,9 @@
 import model.Donation;
 import services.DonationService;
-import utils.DbException;
 
-import java.sql.SQLException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -28,7 +29,13 @@ public class Main {
 
                 switch (choice) {
                     case 1:
-                        registerDonation(sc);
+                        System.out.println("Deseja cadastrar os itens por arquivo CSV? (s/n): ");
+                        String method = sc.nextLine();
+                        if (method.equalsIgnoreCase("s")) {
+                            registerDonationsFromCSV(sc);
+                        } else {
+                            registerDonation(sc);
+                        }
                         break;
                     case 2:
                         readDonation(sc);
@@ -53,27 +60,55 @@ public class Main {
 
     private static void registerDonation(Scanner scanner) {
         System.out.println("Cadastrar Item");
-        System.out.print("Tipo do Item (Roupas/Higiene/Alimentos): ");
+        System.out.print("Tipo do Item (Roupa/Higiene/Alimento): ");
         String itemType = scanner.nextLine();
-        System.out.print("Categoria do Item (Agasalhos/Camisas/Sabonete/Escova de dentes/Pasta de dentes/Absorventes): ");// tirar esse e o de baixo pra descricao
-        String itemCategory = scanner.nextLine();
-        System.out.print("Tamanho (Infantil/PP/P/M/G/GG) (deixe em branco se não se aplicar): ");
-        String itemSize = scanner.nextLine();
+        System.out.print("Descrição do Item: ");
+        String itemDescription = scanner.nextLine();
+        System.out.print("Data de validade (deixe em branco se não se aplicar): ");
+        String itemExpirationDate = scanner.nextLine();
         System.out.print("Quantidade: ");
         int quantity = scanner.nextInt();
         scanner.nextLine();
         System.out.print("Centro de Distribuição (1- Canoas / 2- Porto Alegre / 3- Nova Cachoeirinha): ");
-        String distributionCenter = scanner.nextLine();
+        int distributionCenter = scanner.nextInt();
+        scanner.nextLine();
 
-        System.out.println(itemType);
-        System.out.println(itemCategory);
-        System.out.println(itemSize);
-        System.out.println(quantity);
-        System.out.println(distributionCenter);
-
-        Donation donation = new Donation(itemType, itemCategory, itemSize, quantity, distributionCenter);
+        Donation donation = new Donation(itemType, itemDescription, itemExpirationDate, quantity, distributionCenter);
         donationService.addDonation(donation);
         System.out.println("Item cadastrado com sucesso.");
+    }
+
+    private static void registerDonationsFromCSV(Scanner scanner) {
+        System.out.println("Digite o caminho do arquivo CSV: ");
+        String filePath = scanner.nextLine();
+
+        String userHome = System.getProperty("user.home");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(userHome + filePath))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
+                String[] values = line.split(",");
+                String itemType = values[0].trim();
+                String itemDescription = values[1].trim();
+                String itemExpirationDate = values[2].trim();
+                int quantity = Integer.parseInt(values[3].trim());
+                int distributionCenter = Integer.parseInt(values[4].trim());
+
+
+                Donation donation = new Donation(itemType, itemDescription, itemExpirationDate, quantity, distributionCenter);
+                donationService.addDonation(donation);
+                System.out.println("Item cadastrado com sucesso.");
+
+            }
+
+        } catch (IOException e) {
+            System.out.println("Erro ao ler o arquivo CSV: " + e.getMessage());
+        }
     }
 
     private static void readDonation(Scanner scanner) {
@@ -96,19 +131,20 @@ public class Main {
         Donation existingDonation = donationService.getDonation(id);
         if (existingDonation != null) {
             System.out.println("Atualizar Item");
-            System.out.print("Tipo do Item (Roupas/Higiene/Alimentos): ");
+            System.out.print("Tipo do Item (Roupa/Higiene/Alimento): ");
             String itemType = scanner.nextLine();
-            System.out.print("Categoria do Item (Agasalhos/Camisas/Sabonete/Escova de dentes/Pasta de dentes/Absorventes): ");
-            String itemCategory = scanner.nextLine();
-            System.out.print("Tamanho (Infantil/PP/P/M/G/GG) (deixe em branco se não se aplicar): ");
-            String itemSize = scanner.nextLine();
+            System.out.print("Descrição do Item: ");
+            String itemDescription = scanner.nextLine();
+            System.out.print("Data de validade (deixe em branco se não se aplicar): ");
+            String itemExpirationDate = scanner.nextLine();
             System.out.print("Quantidade: ");
             int quantity = scanner.nextInt();
             scanner.nextLine();
-            System.out.print("Centro de Distribuição (Porto Alegre/Canoas/Caxias do Sul): ");
-            String distributionCenter = scanner.nextLine();
+            System.out.print("Centro de Distribuição (1- Canoas / 2- Porto Alegre / 3- Nova Cachoeirinha): ");
+            int distributionCenter = scanner.nextInt();
+            scanner.nextLine();
 
-            Donation updatedDonation = new Donation(id, itemType, itemCategory, itemSize, quantity, distributionCenter);
+            Donation updatedDonation = new Donation(id, itemType, itemDescription, itemExpirationDate, quantity, distributionCenter);
             donationService.updateDonation(updatedDonation);
             System.out.println("Item atualizado com sucesso.");
         } else {

@@ -8,25 +8,29 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DonationDAO {
-    private static final String INSERT_DONATION_SQL = "INSERT INTO donations (itemType, itemCategory, itemSize, quantity, distributionCenter) VALUES (?, ?, ?, ?, ?)";
-    private static final String SELECT_DONATION_BY_ID = "SELECT id, itemType, itemCategory, itemSize, quantity, distributionCenter FROM donations WHERE id = ?";
+    private static final String INSERT_DONATION_SQL = "INSERT INTO donations (itemType, itemDescription, itemExpirationDate, quantity, distributionCenter) VALUES (?, ?, ?, ?, ?)";
+    private static final String SELECT_DONATION_BY_ID = "SELECT id, itemType, itemDescription, itemExpirationDate, quantity, distributionCenter FROM donations WHERE id = ?";
     private static final String SELECT_ALL_DONATIONS = "SELECT * FROM donations ORDER BY id";
     private static final String DELETE_DONATION_SQL = "DELETE FROM donations WHERE id = ?";
-    private static final String UPDATE_DONATION_SQL = "UPDATE donations SET itemType = ?, itemCategory = ?, itemSize = ?, quantity = ?, distributionCenter = ? WHERE id = ?";
+    private static final String UPDATE_DONATION_SQL = "UPDATE donations SET itemType = ?, itemDescription = ?, itemExpirationDate = ?, quantity = ?, distributionCenter = ? WHERE id = ?";
+
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
     public void insertDonation(Donation donation) {
+
         try {
             Connection connection = DatabaseUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_DONATION_SQL);
             preparedStatement.setString(1, donation.getItemType());
-            preparedStatement.setString(2, donation.getItemCategory());
-            preparedStatement.setString(3, donation.getItemSize());
+            preparedStatement.setString(2, donation.getItemDescription());
+            preparedStatement.setString(3, donation.getItemExpirationDate());
             preparedStatement.setInt(4, donation.getQuantity());
-            preparedStatement.setString(5, donation.getDistributionCenter());
+            preparedStatement.setInt(5, donation.getDistributionCenter());
 
             int rowsAffected = preparedStatement.executeUpdate();
 
@@ -45,11 +49,11 @@ public class DonationDAO {
 
             while (rs.next()) {
                 String itemType = rs.getString("itemType");
-                String itemCategory = rs.getString("itemCategory");
-                String itemSize = rs.getString("itemSize");
+                String itemDescription = rs.getString("itemDescription");
+                String itemExpirationDate = rs.getString("itemExpirationDate");
                 int quantity = rs.getInt("quantity");
-                String distributionCenter = rs.getString("distributionCenter");
-                donation = new Donation(id, itemType, itemCategory, itemSize, quantity, distributionCenter);
+                int distributionCenter = rs.getInt("distributionCenter");
+                donation = new Donation(id, itemType, itemDescription, itemExpirationDate, quantity, distributionCenter);
             }
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
@@ -67,11 +71,11 @@ public class DonationDAO {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String itemType = resultSet.getString("itemType");
-                String itemCategory = resultSet.getString("itemCategory");
-                String itemSize = resultSet.getString("itemSize");
+                String itemDescription = resultSet.getString("itemDescription");
+                String itemExpirationDate = resultSet.getString("itemExpirationDate");
                 int quantity = resultSet.getInt("quantity");
-                String distributionCenter = resultSet.getString("distributionCenter");
-                donations.add(new Donation(id, itemType, itemCategory, itemSize, quantity, distributionCenter));
+                int distributionCenter = resultSet.getInt("distributionCenter");
+                donations.add(new Donation(id, itemType, itemDescription, itemExpirationDate, quantity, distributionCenter));
             }
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
@@ -99,10 +103,10 @@ public class DonationDAO {
             Connection connection = DatabaseUtil.getConnection();
             PreparedStatement statement = connection.prepareStatement(UPDATE_DONATION_SQL);
             statement.setString(1, donation.getItemType());
-            statement.setString(2, donation.getItemCategory());
-            statement.setString(3, donation.getItemSize());
+            statement.setString(2, donation.getItemDescription());
+            statement.setString(3, donation.getItemExpirationDate());
             statement.setInt(4, donation.getQuantity());
-            statement.setString(5, donation.getDistributionCenter());
+            statement.setInt(5, donation.getDistributionCenter());
             statement.setInt(6, donation.getId());
 
             rowUpdated = statement.executeUpdate() > 0;

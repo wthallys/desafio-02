@@ -3,7 +3,6 @@ package services;
 import dao.DonationDAO;
 import model.Donation;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class DonationService {

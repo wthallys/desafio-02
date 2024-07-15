@@ -3,24 +3,24 @@ package model;
 public class Donation {
     private int id;
     private String itemType;
-    private String itemCategory;
-    private String itemSize;
+    private String itemDescription;
+    private String itemExpirationDate;
     private int quantity;
-    private String distributionCenter;
+    private int distributionCenter;
 
-    public Donation(String itemType, String itemCategory, String itemSize, int quantity, String distributionCenter) {
+    public Donation(String itemType, String itemDescription, String itemExpirationDate, int quantity, int distributionCenter) {
         this.itemType = itemType;
-        this.itemCategory = itemCategory;
-        this.itemSize = itemSize;
+        this.itemDescription = itemDescription;
+        this.itemExpirationDate = itemExpirationDate;
         this.quantity = quantity;
         this.distributionCenter = distributionCenter;
     }
 
-    public Donation(int id, String itemType, String itemCategory, String itemSize, int quantity, String distributionCenter) {
+    public Donation(int id, String itemType, String itemDescription, String itemExpirationDate, int quantity, int distributionCenter) {
         this.id = id;
         this.itemType = itemType;
-        this.itemCategory = itemCategory;
-        this.itemSize = itemSize;
+        this.itemDescription = itemDescription;
+        this.itemExpirationDate = itemExpirationDate;
         this.quantity = quantity;
         this.distributionCenter = distributionCenter;
     }
@@ -37,20 +37,20 @@ public class Donation {
         this.itemType = itemType;
     }
 
-    public String getItemCategory() {
-        return itemCategory;
+    public String getItemDescription() {
+        return itemDescription;
     }
 
-    public void setItemCategory(String itemCategory) {
-        this.itemCategory = itemCategory;
+    public void setItemDescription(String itemDescription) {
+        this.itemDescription = itemDescription;
     }
 
-    public String getItemSize() {
-        return itemSize;
+    public String getItemExpirationDate() {
+        return itemExpirationDate;
     }
 
-    public void setItemSize(String itemSize) {
-        this.itemSize = itemSize;
+    public void setItemExpirationDate(String itemExpirationDate) {
+        this.itemExpirationDate = itemExpirationDate;
     }
 
     public int getQuantity() {
@@ -61,11 +61,11 @@ public class Donation {
         this.quantity = quantity;
     }
 
-    public String getDistributionCenter() {
+    public int getDistributionCenter() {
         return distributionCenter;
     }
 
-    public void setDistributionCenter(String distributionCenter) {
+    public void setDistributionCenter(int distributionCenter) {
         this.distributionCenter = distributionCenter;
     }
 
@@ -73,8 +73,8 @@ public class Donation {
     public String toString() {
         return "Donation{id= " + id +
                 ", itemType= " + itemType +
-                ", itemCategory= " + itemCategory +
-                ", itemSize= " + itemSize +
+                ", itemDescription= " + itemDescription +
+                ", itemExpirationDate= " + itemExpirationDate +
                 ", quantity= " + quantity +
                 ", distributionCenter= " + distributionCenter +
                 "}";

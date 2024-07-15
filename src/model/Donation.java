@@ -8,12 +8,25 @@ public class Donation {
     private int quantity;
     private String distributionCenter;
 
-    public int getId() {
-        return id;
+    public Donation(String itemType, String itemCategory, String itemSize, int quantity, String distributionCenter) {
+        this.itemType = itemType;
+        this.itemCategory = itemCategory;
+        this.itemSize = itemSize;
+        this.quantity = quantity;
+        this.distributionCenter = distributionCenter;
     }
 
-    public void setId(int id) {
+    public Donation(int id, String itemType, String itemCategory, String itemSize, int quantity, String distributionCenter) {
         this.id = id;
+        this.itemType = itemType;
+        this.itemCategory = itemCategory;
+        this.itemSize = itemSize;
+        this.quantity = quantity;
+        this.distributionCenter = distributionCenter;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getItemType() {
@@ -54,5 +67,16 @@ public class Donation {
 
     public void setDistributionCenter(String distributionCenter) {
         this.distributionCenter = distributionCenter;
+    }
+
+    @Override
+    public String toString() {
+        return "Donation{id= " + id +
+                ", itemType= " + itemType +
+                ", itemCategory= " + itemCategory +
+                ", itemSize= " + itemSize +
+                ", quantity= " + quantity +
+                ", distributionCenter= " + distributionCenter +
+                "}";
     }
 }
